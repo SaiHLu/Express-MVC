@@ -1,25 +1,20 @@
 const express = require("express");
-
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.json({ msg: "get contact" });
-});
+const authMiddleware = require("../middlewares/auth");
+const contactValidations = require("../validations/contactValidations");
+const ContactController = require("../controllers/ContactController");
 
-router.get("/:id", (req, res) => {
-  res.json({ msg: "get contact" });
-});
+router.get("/", authMiddleware, ContactController.getContacts);
 
-router.post("/", (req, res) => {
-  res.json({ msg: "post contact" });
-});
+router.post(
+  "/",
+  [authMiddleware, contactValidations],
+  ContactController.createContact
+);
 
-router.put("/:id", (req, res) => {
-  res.json({ msg: "update contact" });
-});
+router.put("/:id", authMiddleware, ContactController.updateContact);
 
-router.delete("/:id", (req, res) => {
-  res.json({ msg: "update contact" });
-});
+router.delete("/:id", authMiddleware, ContactController.deleteContact);
 
 module.exports = router;
